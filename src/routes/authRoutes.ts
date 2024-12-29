@@ -117,7 +117,7 @@ router.post(
       user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
       await user.save();
 
-      const resetURL = `https://client-invoice-gen.vercel.app/reset-password?token=${resetToken}`;
+      const resetURL = `http://client-invoice-gen.vercel.app/reset-password?token=${resetToken}`;
       const transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {

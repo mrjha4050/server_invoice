@@ -13,7 +13,7 @@ const app = express();
 
 
 app.use(cors({
-  origin: "https://client-invoice-gen.vercel.app",
+  origin: "http://client-invoice-gen.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 }));
