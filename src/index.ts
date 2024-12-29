@@ -9,16 +9,20 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = "https://client-invoice-gen.vercel.app";  
-
-app.options("*", cors()); 
+const allowedOrigins = ["https://client-invoice-gen.vercel.app"];  
 
 app.use(
   cors({
-    origin: allowedOrigins,  
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  
-    allowedHeaders: ["Content-Type", "Authorization"],  
-    credentials: true,  
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
@@ -33,10 +37,9 @@ mongoose
     console.error("❌ MongoDB connection error:", error.message);
   });
 
-
-  app.get("/", (req, res) => {
-    res.send("Server is running...");
-  });
+app.get("/", (req, res) => {
+  res.send("Server is running...");
+});
 app.use("/api/invoices", invoicesRouter);
 app.use("/api/auth", authRoutes);
 
@@ -49,7 +52,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   res.status(statusCode).json({ message: errorMessage });
 });
 
-const PORT = `https://server-invoice.vercel.app`;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on  https://server-invoice.vercel.app`);
+  console.log(`🚀 Server is running on port ${PORT}`);
 });
