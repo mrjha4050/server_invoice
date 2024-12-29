@@ -2,22 +2,22 @@ import express, { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { body, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
-import User from "../models/User";
-import { generateToken } from "../utils/jwt";
-import rateLimit from "express-rate-limit";
-import nodemailer from "nodemailer";
+import User from "../models/User"; 
 import crypto from "crypto";
+import nodemailer from "nodemailer";
+import rateLimit from "express-rate-limit";
 
 const router = express.Router();
 
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  
-  max: 10,  
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs
   handler: (req: Request, res: Response) => {
     res.status(429).json({ message: "Too many login attempts, please try again later." });
   },
 });
 
+// **REGISTER**
 router.post(
   "/register",
   [
@@ -47,16 +47,18 @@ router.post(
 
       res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
+      console.error("Error during registration:", error);
       res.status(500).json({ message: "Server error", error });
     }
   }
 );
 
+// **LOGIN**
 router.post(
   "/login",
   loginLimiter,
   async (req: Request, res: Response): Promise<void> => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
     try {
       const user = await User.findOne({ email });
@@ -82,13 +84,13 @@ router.post(
         user: { id: user._id, name: user.name, email: user.email },
       });
     } catch (error) {
+      console.error("Error during login:", error);
       res.status(500).json({ message: "Server error", error });
     }
   }
 );
 
-
-
+// **FORGOT PASSWORD**
 router.post(
   "/forgot-password",
   [body("email").isEmail().withMessage("Invalid email format")],
@@ -115,7 +117,7 @@ router.post(
       user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
       await user.save();
 
-      const resetURL = `https://server-invoice.vercel.app/reset-password?token=${resetToken}`;
+      const resetURL = `https://client-invoice-gen.vercel.app/reset-password?token=${resetToken}`;
       const transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {
@@ -133,12 +135,13 @@ router.post(
 
       res.status(200).json({ message: "Password reset email sent!" });
     } catch (error) {
-      console.error(error);
+      console.error("Error during forgot-password:", error);
       res.status(500).json({ message: "Server error", error });
     }
   }
 );
 
+// **RESET PASSWORD**
 router.post(
   "/reset-password",
   [
@@ -174,17 +177,15 @@ router.post(
 
       res.status(200).json({ message: "Password reset successfully" });
     } catch (error) {
-      console.error(error);
+      console.error("Error during reset-password:", error);
       res.status(500).json({ message: "Server error", error });
     }
   }
 );
 
-
-// Example: GET /api/auth/test
+// **TEST ROUTE**
 router.get("/test", (req, res) => {
   res.json({ message: "Auth route is working!" });
 });
-
 
 export default router;

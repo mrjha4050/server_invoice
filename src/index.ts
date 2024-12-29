@@ -9,22 +9,15 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = ["https://client-invoice-gen.vercel.app"];  
+// const allowedOrigins = ["https://client-invoice-gen.vercel.app"];  
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+
+app.use(cors({
+  origin: "https://client-invoice-gen.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+}));
+
 
 app.use(express.json());
 
