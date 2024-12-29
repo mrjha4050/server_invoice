@@ -49,7 +49,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   res.status(statusCode).json({ message: errorMessage });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = `https://server-invoice.vercel.app`;
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  console.log(`🚀 Server is running on  https://server-invoice.vercel.app`);
 });
