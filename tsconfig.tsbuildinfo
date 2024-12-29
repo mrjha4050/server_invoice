@@ -1,0 +1,1 @@
+{"root":["./src/authmiddleware.ts","./src/index.ts","./src/models/invoice.ts","./src/models/user.ts","./src/routes/authroutes.ts","./src/routes/invoiceroutes.ts","./src/utils/jwt.ts"],"version":"5.7.2"}
