@@ -9,7 +9,7 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = ["http://localhost:5173"];  
+const allowedOrigins = ["https://client-invoice-gen.vercel.app/"];  
 
 app.use(
   cors({
